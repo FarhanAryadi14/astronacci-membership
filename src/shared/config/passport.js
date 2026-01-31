@@ -72,26 +72,26 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
         });
 
         if (!user) {
+          const email = profile.emails[0].value;
+          
           // Check if email already exists with different provider
-          const existingUser = await User.findOne({
-            where: { email: profile.emails[0].value },
-          });
+          const existingUser = await User.findOne({ where: { email } });
 
           if (existingUser) {
-            logger.warn(`[AUTH] Google login failed: Email already registered via ${existingUser.provider}`);
-            return done(null, false, { message: `Email already registered via ${existingUser.provider}` });
+            // Link account - allow login with existing account
+            logger.info(`[AUTH] Google login: Linking to existing account ${email} (was ${existingUser.provider})`);
+            user = existingUser;
+          } else {
+            user = await User.create({
+              email,
+              name: profile.displayName,
+              provider: 'google',
+              providerId: profile.id,
+              avatar: profile.photos[0]?.value || null,
+              membershipType: 'A',
+            });
+            logger.info(`[AUTH] New user registered via Google: ${user.email}`);
           }
-
-          user = await User.create({
-            email: profile.emails[0].value,
-            name: profile.displayName,
-            provider: 'google',
-            providerId: profile.id,
-            avatar: profile.photos[0]?.value || null,
-            membershipType: 'A',
-          });
-
-          logger.info(`[AUTH] New user registered via Google: ${user.email}`);
         } else {
           logger.info(`[AUTH] User logged in via Google: ${user.email}`);
         }
@@ -126,21 +126,21 @@ if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
           // Check if email already exists with different provider
           const existingUser = await User.findOne({ where: { email } });
 
-          if (existingUser && existingUser.provider !== 'facebook') {
-            logger.warn(`[AUTH] Facebook login failed: Email already registered via ${existingUser.provider}`);
-            return done(null, false, { message: `Email already registered via ${existingUser.provider}` });
+          if (existingUser) {
+            // Link account - allow login with existing account
+            logger.info(`[AUTH] Facebook login: Linking to existing account ${email} (was ${existingUser.provider})`);
+            user = existingUser;
+          } else {
+            user = await User.create({
+              email,
+              name: profile.displayName,
+              provider: 'facebook',
+              providerId: profile.id,
+              avatar: profile.photos?.[0]?.value || null,
+              membershipType: 'A',
+            });
+            logger.info(`[AUTH] New user registered via Facebook: ${user.email}`);
           }
-
-          user = await User.create({
-            email,
-            name: profile.displayName,
-            provider: 'facebook',
-            providerId: profile.id,
-            avatar: profile.photos?.[0]?.value || null,
-            membershipType: 'A',
-          });
-
-          logger.info(`[AUTH] New user registered via Facebook: ${user.email}`);
         } else {
           logger.info(`[AUTH] User logged in via Facebook: ${user.email}`);
         }
