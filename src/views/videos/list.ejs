@@ -1,0 +1,109 @@
+<%- include('../layouts/main', { body: `
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Videos</h1>
+      <p class="text-gray-600 mt-1">
+        You can access <span class="font-semibold text-primary-600">${accessibleCount}</span> of ${totalCount} videos
+      </p>
+    </div>
+    <div class="mt-4 sm:mt-0">
+      <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium 
+        ${membershipType === 'C' ? 'bg-purple-100 text-purple-800' : 
+          membershipType === 'B' ? 'bg-blue-100 text-blue-800' : 
+          'bg-gray-100 text-gray-800'}">
+        ${membershipType === 'C' ? 'Unlimited' : membershipType === 'B' ? 'Premium' : 'Basic'} Member
+      </span>
+    </div>
+  </div>
+
+  <!-- Videos Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    ${videos.map(video => `
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden group ${!video.isAccessible ? 'opacity-75' : ''}">
+      <div class="relative">
+        <img 
+          src="${video.thumbnail || 'https://picsum.photos/seed/' + video.id + '/800/450'}" 
+          alt="${video.title}"
+          class="w-full h-48 object-cover ${!video.isAccessible ? 'filter grayscale' : ''}"
+        >
+        <!-- Play Button Overlay -->
+        <div class="absolute inset-0 flex items-center justify-center">
+          ${video.isAccessible ? `
+          <a href="/videos/${video.slug}" class="w-14 h-14 bg-white bg-opacity-90 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+            <svg class="w-6 h-6 text-primary-600 ml-1" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </a>
+          ` : `
+          <div class="text-center text-white">
+            <div class="w-14 h-14 bg-black bg-opacity-60 rounded-full flex items-center justify-center mx-auto mb-2">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+              </svg>
+            </div>
+            <span class="text-sm font-medium bg-black bg-opacity-60 px-2 py-1 rounded">Upgrade to Access</span>
+          </div>
+          `}
+        </div>
+        <!-- Position Badge -->
+        <div class="absolute top-3 left-3">
+          <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-white bg-opacity-90 text-gray-700">
+            #${video.position}
+          </span>
+        </div>
+        <!-- Duration Badge -->
+        ${video.duration ? `
+        <div class="absolute bottom-3 right-3">
+          <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-black bg-opacity-75 text-white">
+            ${Math.floor(video.duration / 60)}:${(video.duration % 60).toString().padStart(2, '0')}
+          </span>
+        </div>
+        ` : ''}
+      </div>
+      <div class="p-5">
+        <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
+          ${video.title}
+        </h3>
+        <p class="text-gray-600 text-sm mb-4 line-clamp-2">${video.description || ''}</p>
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-gray-500">
+            ${video.viewCount || 0} views
+          </span>
+          ${video.isAccessible ? `
+          <a href="/videos/${video.slug}" class="inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-700">
+            Watch Now
+            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+            </svg>
+          </a>
+          ` : `
+          <a href="/membership" class="inline-flex items-center text-sm font-medium text-gray-400 hover:text-primary-600">
+            Upgrade
+            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+          </a>
+          `}
+        </div>
+      </div>
+    </div>
+    `).join('')}
+  </div>
+
+  ${membershipType !== 'C' ? `
+  <!-- Upgrade Banner -->
+  <div class="bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl p-6 text-white text-center">
+    <h3 class="text-xl font-bold mb-2">Want to access all ${totalCount} videos?</h3>
+    <p class="text-primary-100 mb-4">Upgrade your membership to unlock unlimited content</p>
+    <a href="/membership" class="inline-flex items-center px-6 py-3 bg-white text-primary-600 font-medium rounded-lg hover:bg-primary-50 transition-colors">
+      View Membership Plans
+      <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+      </svg>
+    </a>
+  </div>
+  ` : ''}
+</div>
+` }) %>

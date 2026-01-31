@@ -1,0 +1,120 @@
+<%- include('../layouts/main', { body: `
+<div class="space-y-8">
+  <!-- Welcome Section -->
+  <div class="bg-gradient-to-r from-primary-600 to-primary-700 rounded-2xl p-8 text-white">
+    <h1 class="text-3xl font-bold mb-2">Welcome back, ${user.name}!</h1>
+    <p class="text-primary-100">Here's an overview of your membership and content access.</p>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Membership Card -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-sm font-medium text-gray-500">Membership</span>
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+          ${membershipInfo.type === 'C' ? 'bg-purple-100 text-purple-800' : 
+            membershipInfo.type === 'B' ? 'bg-blue-100 text-blue-800' : 
+            'bg-gray-100 text-gray-800'}">
+          ${membershipInfo.name}
+        </span>
+      </div>
+      <p class="text-2xl font-bold text-gray-900">${membershipInfo.name}</p>
+      <p class="text-sm text-gray-500 mt-1">${membershipInfo.description}</p>
+    </div>
+
+    <!-- Articles Access -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-sm font-medium text-gray-500">Articles Access</span>
+        <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>
+      </div>
+      <p class="text-2xl font-bold text-gray-900">${stats.accessibleArticles} <span class="text-lg font-normal text-gray-500">/ ${stats.totalArticles}</span></p>
+      <p class="text-sm text-gray-500 mt-1">articles available</p>
+    </div>
+
+    <!-- Videos Access -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-sm font-medium text-gray-500">Videos Access</span>
+        <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <p class="text-2xl font-bold text-gray-900">${stats.accessibleVideos} <span class="text-lg font-normal text-gray-500">/ ${stats.totalVideos}</span></p>
+      <p class="text-sm text-gray-500 mt-1">videos available</p>
+    </div>
+
+    <!-- Upgrade CTA -->
+    ${membershipInfo.type !== 'C' ? `
+    <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-sm p-6 text-white">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-sm font-medium text-purple-100">Upgrade</span>
+        <svg class="w-5 h-5 text-purple-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+        </svg>
+      </div>
+      <p class="text-lg font-bold mb-2">Get Unlimited Access</p>
+      <a href="/membership" class="inline-flex items-center text-sm font-medium text-white hover:text-purple-100">
+        Upgrade Now
+        <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+    ` : `
+    <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-sm p-6 text-white">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-sm font-medium text-green-100">Status</span>
+        <svg class="w-5 h-5 text-green-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <p class="text-lg font-bold mb-2">Unlimited Access</p>
+      <p class="text-sm text-green-100">You have full access to all content</p>
+    </div>
+    `}
+  </div>
+
+  <!-- Quick Links -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <a href="/articles" class="group bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:border-primary-300 hover:shadow-md transition-all">
+      <div class="flex items-center">
+        <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center group-hover:bg-primary-200 transition-colors">
+          <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+        </div>
+        <div class="ml-4">
+          <h3 class="text-lg font-semibold text-gray-900 group-hover:text-primary-600">Browse Articles</h3>
+          <p class="text-sm text-gray-500">Read curated articles from experts</p>
+        </div>
+        <svg class="ml-auto w-5 h-5 text-gray-400 group-hover:text-primary-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </div>
+    </a>
+
+    <a href="/videos" class="group bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:border-primary-300 hover:shadow-md transition-all">
+      <div class="flex items-center">
+        <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center group-hover:bg-primary-200 transition-colors">
+          <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div class="ml-4">
+          <h3 class="text-lg font-semibold text-gray-900 group-hover:text-primary-600">Watch Videos</h3>
+          <p class="text-sm text-gray-500">Learn with video tutorials</p>
+        </div>
+        <svg class="ml-auto w-5 h-5 text-gray-400 group-hover:text-primary-500 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </div>
+    </a>
+  </div>
+</div>
+` }) %>

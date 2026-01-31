@@ -1,0 +1,60 @@
+<%- include('../layouts/main', { body: `
+<div class="max-w-4xl mx-auto">
+  <!-- Back Button -->
+  <a href="/videos" class="inline-flex items-center text-gray-600 hover:text-primary-600 mb-6">
+    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+    </svg>
+    Back to Videos
+  </a>
+
+  <!-- Video Player -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div class="relative pb-[56.25%] bg-black">
+      <iframe 
+        src="${video.url}" 
+        class="absolute inset-0 w-full h-full"
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen
+      ></iframe>
+    </div>
+    
+    <div class="p-6 md:p-8">
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">${video.title}</h1>
+      
+      <div class="flex items-center text-sm text-gray-500 mb-6 pb-6 border-b border-gray-200">
+        <span>${new Date(video.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+        <span class="mx-2">•</span>
+        <span>${video.viewCount || 0} views</span>
+        ${video.duration ? `
+        <span class="mx-2">•</span>
+        <span>${Math.floor(video.duration / 60)} min ${video.duration % 60} sec</span>
+        ` : ''}
+        ${video.author ? `
+        <span class="mx-2">•</span>
+        <span>By ${video.author.name}</span>
+        ` : ''}
+      </div>
+
+      <!-- Video Description -->
+      ${video.description ? `
+      <div class="prose max-w-none">
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">Description</h3>
+        <p class="text-gray-600">${video.description}</p>
+      </div>
+      ` : ''}
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="mt-8 flex justify-between">
+    <a href="/videos" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      All Videos
+    </a>
+  </div>
+</div>
+` }) %>

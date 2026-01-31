@@ -1,0 +1,129 @@
+<%- include('../layouts/main', { body: `
+<div class="space-y-8">
+  <!-- Header -->
+  <div class="text-center">
+    <h1 class="text-3xl font-bold text-gray-900">Membership Plans</h1>
+    <p class="text-gray-600 mt-2">Choose the plan that fits your learning needs</p>
+  </div>
+
+  <!-- Current Membership -->
+  <div class="bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl p-6 text-white">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-primary-100 text-sm">Your Current Plan</p>
+        <h2 class="text-2xl font-bold">${currentMembership.name}</h2>
+        <p class="text-primary-100 mt-1">${currentMembership.description}</p>
+      </div>
+      <div class="text-right">
+        <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-white bg-opacity-20">
+          Active
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    ${allMemberships.map(membership => `
+    <div class="bg-white rounded-xl shadow-sm border-2 ${membership.type === currentMembership.type ? 'border-primary-500' : 'border-gray-200'} overflow-hidden relative">
+      ${membership.type === currentMembership.type ? `
+      <div class="absolute top-0 right-0 bg-primary-500 text-white text-xs font-medium px-3 py-1 rounded-bl-lg">
+        Current Plan
+      </div>
+      ` : ''}
+      
+      <div class="p-6">
+        <h3 class="text-xl font-bold text-gray-900">${membership.name}</h3>
+        <p class="text-gray-500 text-sm mt-1">${membership.description}</p>
+        
+        <div class="mt-4">
+          <span class="text-4xl font-bold text-gray-900">
+            ${membership.price === 0 ? 'Free' : 'Rp ' + membership.price.toLocaleString('id-ID')}
+          </span>
+          ${membership.price > 0 ? '<span class="text-gray-500">/month</span>' : ''}
+        </div>
+
+        <ul class="mt-6 space-y-3">
+          <li class="flex items-center text-sm">
+            <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            <span class="text-gray-600">
+              ${membership.limits.articles === Infinity ? 'Unlimited' : membership.limits.articles} Articles
+            </span>
+          </li>
+          <li class="flex items-center text-sm">
+            <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            <span class="text-gray-600">
+              ${membership.limits.videos === Infinity ? 'Unlimited' : membership.limits.videos} Videos
+            </span>
+          </li>
+          <li class="flex items-center text-sm">
+            <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            <span class="text-gray-600">Email Support</span>
+          </li>
+          ${membership.type === 'B' || membership.type === 'C' ? `
+          <li class="flex items-center text-sm">
+            <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            <span class="text-gray-600">Priority Support</span>
+          </li>
+          ` : ''}
+          ${membership.type === 'C' ? `
+          <li class="flex items-center text-sm">
+            <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            <span class="text-gray-600">Exclusive Content</span>
+          </li>
+          ` : ''}
+        </ul>
+
+        <div class="mt-6">
+          ${membership.type === currentMembership.type ? `
+          <button disabled class="w-full py-3 px-4 bg-gray-100 text-gray-500 font-medium rounded-lg cursor-not-allowed">
+            Current Plan
+          </button>
+          ` : membership.type < currentMembership.type ? `
+          <button disabled class="w-full py-3 px-4 bg-gray-100 text-gray-400 font-medium rounded-lg cursor-not-allowed">
+            Downgrade Not Available
+          </button>
+          ` : `
+          <form action="/membership/upgrade" method="POST">
+            <input type="hidden" name="type" value="${membership.type}">
+            <button type="submit" class="w-full py-3 px-4 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors">
+              Upgrade to ${membership.name}
+            </button>
+          </form>
+          `}
+        </div>
+      </div>
+    </div>
+    `).join('')}
+  </div>
+
+  <!-- FAQ Section -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">Frequently Asked Questions</h3>
+    <div class="space-y-4">
+      <div>
+        <h4 class="font-medium text-gray-900">Can I upgrade my membership anytime?</h4>
+        <p class="text-gray-600 text-sm mt-1">Yes, you can upgrade your membership at any time. The new benefits will be available immediately.</p>
+      </div>
+      <div>
+        <h4 class="font-medium text-gray-900">Can I downgrade my membership?</h4>
+        <p class="text-gray-600 text-sm mt-1">Currently, downgrading is not available. Please contact support if you need assistance.</p>
+      </div>
+      <div>
+        <h4 class="font-medium text-gray-900">How do I access locked content?</h4>
+        <p class="text-gray-600 text-sm mt-1">Upgrade to a higher membership tier to unlock more articles and videos.</p>
+      </div>
+    </div>
+  </div>
+</div>
+` }) %>

@@ -1,0 +1,150 @@
+<nav class="bg-white shadow-sm border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16">
+      <div class="flex items-center">
+        <a href="/" class="flex items-center">
+          <span class="text-xl font-bold text-primary-600">Astronacci</span>
+        </a>
+        
+        <% if (user) { %>
+        <div class="hidden md:ml-10 md:flex md:space-x-8">
+          <a href="/dashboard" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-700 hover:text-primary-600">
+            Dashboard
+          </a>
+          <a href="/articles" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-700 hover:text-primary-600">
+            Articles
+          </a>
+          <a href="/videos" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-700 hover:text-primary-600">
+            Videos
+          </a>
+          <a href="/membership" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-700 hover:text-primary-600">
+            Membership
+          </a>
+        </div>
+        <% } %>
+      </div>
+
+      <div class="flex items-center">
+        <% if (user) { %>
+        <div class="hidden md:flex md:items-center md:space-x-4">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+            <%= user.membershipType === 'C' ? 'bg-purple-100 text-purple-800' : 
+                user.membershipType === 'B' ? 'bg-blue-100 text-blue-800' : 
+                'bg-gray-100 text-gray-800' %>">
+            <%= user.membershipType === 'C' ? 'Unlimited' : 
+                user.membershipType === 'B' ? 'Premium' : 'Basic' %>
+          </span>
+          
+          <div class="relative">
+            <button id="userDropdownBtn" class="flex items-center space-x-2 text-sm font-medium text-gray-700 hover:text-primary-600 focus:outline-none">
+              <% if (user.avatar) { %>
+              <img src="<%= user.avatar %>" alt="Avatar" class="w-8 h-8 rounded-full">
+              <% } else { %>
+              <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
+                <span class="text-primary-600 font-medium"><%= user.name.charAt(0).toUpperCase() %></span>
+              </div>
+              <% } %>
+              <span class="hidden lg:block"><%= user.name %></span>
+              <svg id="dropdownArrow" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            
+            <div id="userDropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+              <a href="/user/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+              <a href="/membership" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Membership</a>
+              <hr class="my-1">
+              <form action="/auth/logout" method="POST">
+                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                  Logout
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <% } else { %>
+        <div class="hidden md:flex md:items-center md:space-x-4">
+          <a href="/auth/login" class="text-sm font-medium text-gray-700 hover:text-primary-600">Login</a>
+          <a href="/auth/register" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
+            Register
+          </a>
+        </div>
+        <% } %>
+
+        <!-- Mobile menu button -->
+        <button id="mobileMenuBtn" class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none">
+          <svg id="mobileMenuIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+          <svg id="mobileCloseIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobileMenu" class="hidden md:hidden border-t border-gray-200">
+    <div class="px-2 pt-2 pb-3 space-y-1">
+      <% if (user) { %>
+      <a href="/dashboard" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50">Dashboard</a>
+      <a href="/articles" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50">Articles</a>
+      <a href="/videos" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50">Videos</a>
+      <a href="/membership" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50">Membership</a>
+      <a href="/user/profile" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50">Profile</a>
+      <hr class="my-2">
+      <form action="/auth/logout" method="POST">
+        <button type="submit" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-gray-50">Logout</button>
+      </form>
+      <% } else { %>
+      <a href="/auth/login" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50">Login</a>
+      <a href="/auth/register" class="block px-3 py-2 rounded-md text-base font-medium text-primary-600 hover:bg-gray-50">Register</a>
+      <% } %>
+    </div>
+  </div>
+</nav>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // User Dropdown
+  const dropdownBtn = document.getElementById('userDropdownBtn');
+  const dropdownMenu = document.getElementById('userDropdownMenu');
+  const dropdownArrow = document.getElementById('dropdownArrow');
+
+  if (dropdownBtn && dropdownMenu) {
+    dropdownBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      dropdownMenu.classList.toggle('hidden');
+      if (dropdownArrow) {
+        dropdownArrow.classList.toggle('rotate-180');
+      }
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+        dropdownMenu.classList.add('hidden');
+        if (dropdownArrow) {
+          dropdownArrow.classList.remove('rotate-180');
+        }
+      }
+    });
+  }
+
+  // Mobile Menu
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mobileMenuIcon = document.getElementById('mobileMenuIcon');
+  const mobileCloseIcon = document.getElementById('mobileCloseIcon');
+
+  if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener('click', function() {
+      mobileMenu.classList.toggle('hidden');
+      if (mobileMenuIcon && mobileCloseIcon) {
+        mobileMenuIcon.classList.toggle('hidden');
+        mobileCloseIcon.classList.toggle('hidden');
+      }
+    });
+  }
+});
+</script>
